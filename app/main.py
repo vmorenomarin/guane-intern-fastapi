@@ -1,12 +1,18 @@
 from datetime import datetime
-# from typing import Optional
 from pydantic import Field
 import uuid
+from pydantic.networks import EmailStr
 import requests
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from fastapi import FastAPI
-from fastapi import Body, Path, Query
-app = FastAPI()
+
+from routes.user import user
+from fastapi import (Body, Path, Query)
+
+app = FastAPI(title="Guane-Intern-FastAPI",
+              description="REST API builded using FastAPI framework and MondoDB as database.")
+app.include_router(user)
+
 
 # Models
 
@@ -18,17 +24,7 @@ class Dog(BaseModel):
         "https://dog.ceo/api/breeds/image/random").json()["message"])
     is_adopted: bool
     create_date: datetime = None
-
-    class Config:
-        schema_extra = {
-            "example":
-            {
-                "name": "Tito",
-                "picture": "https://images.dog.ceo/breeds/mastiff-english/2.jpg",
-                "is_adopted": False,
-                "create_date": "2021, 10, 25, 22, 56, 15, 858589"
-            }
-        }
+    id_user: UUID4
 
 
 # Path operation definitions with path parameters and query parameters.
@@ -38,6 +34,7 @@ class Dog(BaseModel):
 
 @app.get("/")
 async def home():
+    # db['dogs']=
     return {"message": "Ok"}
 
 
@@ -64,6 +61,7 @@ async def is_adopted(
 
 @app.post("/api/dogs/new")
 async def create_dog(dog: Dog = Body(...)):
+    db['dogs'].insert_one(dog)
     return dog
 
 
@@ -75,3 +73,5 @@ async def update_dog(
     dog: Dog = Body(...)
 ):
     return dog
+
+# User CRUD
