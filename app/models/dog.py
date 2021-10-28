@@ -8,5 +8,5 @@ class Dog(BaseModel):
         "https://dog.ceo/api/breeds/image/random").json()["message"])
     is_adopted: bool
     create_date: datetime = None
-    id_user: str
+    user_id: str
     
