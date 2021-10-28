@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from fastapi.param_functions import Query
 from models.dog import Dog
 from schemas.dog import dogsEntity, dogEntity
 from config.db import client
 from bson import ObjectId
-from starlette.status import HTTP_204_NO_CONTENT
 
 
 dog = APIRouter()
@@ -31,14 +30,22 @@ async def show_dog(id_dog: str):
 
 @dog.get("/api/dogs/")
 async def is_adopted(is_adopted: bool = Query(...)):
-    dogs = client.guane_db.dogs.find({"is_adopted":is_adopted})
+    dogs = client.guane_db.dogs.find({"is_adopted": is_adopted})
     return dogsEntity(dogs)
+
+
+@dog.get("/api/dogs/user/")
+async def get_dogs_by_user(user_id: str = Query(...)):
+    dogs = client.guane_db.dogs.find({"user_id": user_id})
+    return dogsEntity(dogs)
+    
 
 @dog.delete("/api/dogs/{id_dog}")
 async def delete_dog(id_dog):
     dogEntity(client.guane_db.dogs.find_one_and_delete(
         {"_id": ObjectId(id_dog)}))
-    return Response(status_code=HTTP_204_NO_CONTENT)
+    return {"id_deleted": id_dog,
+            "message": "Dog deleted."}
 
 
 @dog.put("/api/dogs/{id_dog}/")
