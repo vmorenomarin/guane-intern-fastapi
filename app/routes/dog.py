@@ -1,10 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.param_functions import Query
 from models.dog import Dog
 from schemas.dog import dogsEntity, dogEntity
 from config.db import client
 from bson import ObjectId
-
+from controllers.login import get_current_active_user
 
 dog = APIRouter()
 
@@ -16,7 +16,7 @@ async def get_dogs():
 
 
 @dog.post("/api/dogs/", tags=["Dogs"])
-async def create_dog(dog: Dog):
+async def create_dog(dog: Dog = Depends(get_current_active_user)):
     new_dog = dict(dog)
     id_dog = client.guane_db.dogs.insert_one(new_dog).inserted_id
     new_dog = client.guane_db.dogs.find_one({"_id": ObjectId(id_dog)})
