@@ -9,6 +9,7 @@ from models.token import Token
 from controllers.login import authenticate_user, create_access_token
 from routes.dog import dog
 from routes.user import user
+from routes.upload import upload
 
 from config.db import client
 
@@ -46,3 +47,4 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 app.include_router(user)
 app.include_router(dog)
+app.include_router(upload)

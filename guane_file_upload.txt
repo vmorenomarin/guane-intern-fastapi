@@ -1,0 +1,2 @@
+ 
+This is a "dummy file" to test upload methot to https://gttb.guane.dev/docs#/File/upload_file_api_files_post.
