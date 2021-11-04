@@ -1,0 +1,1 @@
+This is a "dummy file" to test post method to https://gttb.guane.dev/api/files.
